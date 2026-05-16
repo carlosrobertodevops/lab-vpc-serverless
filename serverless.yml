@@ -1,0 +1,34 @@
+service: serverless-elb
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  deploymentBucket:
+    name: testbucket
+
+functions:
+  hello1:
+    handler: handler.hello1
+    events:
+      - alb:
+          listenerArn: !Ref HTTPListener
+          priority: 1
+          conditions:
+            path: /hello1
+  hello2:
+    handler: handler.hello2
+    events:
+      - alb:
+          listenerArn: !Ref HTTPListener
+          priority: 2
+          conditions:
+            path: /hello2
+
+plugins:
+  - serverless-deployment-bucket
+  - serverless-localstack
+
+custom:
+  localstack:
+    stages:
+      - local
